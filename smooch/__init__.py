@@ -85,12 +85,17 @@ class Smooch:
         print "message_webhook_needs_updating: {0}".format(message_webhook_needs_updating)
         if not message_webhook_id:
             r = self.make_webhook(webhook_url, ["message"])
+            data = r.json()
+            print data
+            message_webhook_id = data["webhook"]["_id"]
 
         if message_webhook_needs_updating:
             print "Updating webhook"
             r = self.update_webhook(message_webhook_id, webhook_url, ["message"])
             print r.text
             print "-------------------------"
+
+        return message_webhook_id
 
     @property
     def headers(self):
