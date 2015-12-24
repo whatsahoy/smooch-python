@@ -5,6 +5,18 @@ I have had to connect to Smooch so I have written only what I needed.
 
 I needed only JWT token authorization, so only this is supported for now.
 
+# Installation
+
+To install it, just add 
+
+    -e git://github.com/whatsahoy/smooch-python.git@master#egg=smooch
+    
+to your `requirements.txt` file. 
+
+# Help
+
+In case of any trouble, feel free to open new issue or pull request here. 
+
 ## Example usage
 
     from smooch import Smooch
