@@ -13,6 +13,10 @@ class Smooch:
     def __init__(self, key_id, secret):
         self.jwt_token = jwt.encode({'scope': 'app'}, secret, algorithm='HS256', headers={"kid": key_id})
 
+    @classmethod
+    def jwt_for_user(cls, key_id, secret, user_id):
+        return jwt.encode({'scope': 'appUser', 'userId': user_id}, secret, algorithm='HS256', headers={"kid": key_id})
+
 
     def ask(self, endpoint, data, method='get'):
         url = "https://api.smooch.io/v1/{0}".format(endpoint)

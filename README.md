@@ -42,3 +42,13 @@ In case of any trouble, feel free to open new issue or pull request here.
     message_webhook_id = api.ensure_webhook_exist("message:appMaker", "http://example.com/callbacksasd")
     print message_webhook_id
     # 567c0db1282bcf2a00ca95ea
+
+## Smooch user authorization
+   
+In case you want to authorize users using userId in your frontend app, you have to authenticate their userId to make sure they cannot pretend they are someone else.
+In this case in your authorization response you need to return JWT token for user.
+To generate one you can use this function:
+
+    from smooch import Smooch
+    jwt_token = Smooch.jwt_for_user("KEY_ID", "SECRET", "userId")
+    
