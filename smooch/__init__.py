@@ -81,10 +81,12 @@ class Smooch:
 
         message_webhook_id = False
         message_webhook_needs_updating = False
+        webhook_secret = None
 
         for value in data["webhooks"]:
             if trigger in value["triggers"]:
                 message_webhook_id = value["_id"]
+                webhook_secret = value["secret"]
                 if value["target"] != webhook_url:
                     message_webhook_needs_updating = True
                 break
@@ -92,18 +94,17 @@ class Smooch:
         print "message_webhook_id: {0}".format(message_webhook_id)
         print "message_webhook_needs_updating: {0}".format(message_webhook_needs_updating)
         if not message_webhook_id:
+            print "Creating webhook"
             r = self.make_webhook(webhook_url, ["message"])
             data = r.json()
-            print data
             message_webhook_id = data["webhook"]["_id"]
+            webhook_secret = data["webhook"]["secret"]
 
         if message_webhook_needs_updating:
             print "Updating webhook"
-            r = self.update_webhook(message_webhook_id, webhook_url, ["message"])
-            print r.text
-            print "-------------------------"
+            self.update_webhook(message_webhook_id, webhook_url, ["message"])
 
-        return message_webhook_id
+        return message_webhook_id, webhook_secret
 
     @property
     def headers(self):
