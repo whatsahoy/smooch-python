@@ -51,4 +51,10 @@ To generate one you can use this function:
 
     from smooch import Smooch
     jwt_token = Smooch.jwt_for_user("KEY_ID", "SECRET", "userId")
+
+or
+
+    from smooch import Smooch
+    api = Smooch("KEY_ID", "SECRET")
+    jwt_token = api.user_jwt("userId")
     
