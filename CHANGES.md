@@ -1,3 +1,6 @@
+# 1.0.3
+- Added precreate user option 
+
 # 1.0.2
 - Ensuring webhook returns also webhook secret to be able to check if callback is legit
 

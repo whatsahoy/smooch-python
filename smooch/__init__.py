@@ -63,6 +63,12 @@ class Smooch:
         }
         return self.ask('init', data, 'post')
 
+    def precreate_user(self, user_id):
+        data = {
+            "userId": user_id
+        }
+        return self.ask('appusers', data, 'post')
+
 
     def get_webhooks(self):
         return self.ask('webhooks', {}, 'get')

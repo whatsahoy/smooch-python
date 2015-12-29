@@ -23,6 +23,10 @@ In case of any trouble, feel free to open new issue or pull request here.
     api = Smooch("KEY_ID", "SECRET")
     user_id = "b6518"
     
+    r = api.precreate_user(user_id)
+    print r.json()
+    # {u'appUser': {u'credentialRequired': False, u'userId': u'b6518', u'conversationStarted': False, u'signedUpAt': u'2015-12-24T15:15:47.990Z', u'_id': u'3954ac92f5f38913af55819a', u'properties': {}}}
+    
     r = api.init_user(user_id, "device-webapp-{0}".format(user_id))
     print r.json()
     # {u'app': {u'apnEnabled': False, u'hasIcon': False}, u'appUser': {u'credentialRequired': False, u'userId': u'b6518', u'conversationStarted': False, u'signedUpAt': u'2015-12-24T15:15:47.990Z', u'_id': u'3954ac92f5f38913af55819a', u'properties': {}}}
