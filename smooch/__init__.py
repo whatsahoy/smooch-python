@@ -4,9 +4,12 @@ from __future__ import absolute_import, unicode_literals
 import logging
 import jwt
 import json
+from mimetypes import MimeTypes
+import os
 import requests
 
 log = logging.getLogger(__name__)
+
 
 class Smooch:
     def __init__(self, key_id, secret):
@@ -22,20 +25,31 @@ class Smooch:
         return self.jwt_for_user(self.key_id, self.secret, user_id)
 
 
-    def ask(self, endpoint, data, method='get'):
+    def ask(self, endpoint, data, method='get', files=None):
         url = "https://api.smooch.io/v1/{0}".format(endpoint)
+        json = None
 
         if method == 'get':
             caller_func = requests.get
         elif method == 'post':
             caller_func = requests.post
-            data = json.dumps(data)
         elif method == 'put':
             caller_func = requests.put
-            data = json.dumps(data)
 
-        print("Calling %s with data %s" % (url, data))
-        return caller_func(url, headers=self.headers, data=data)
+        headers = self.headers
+        if files:
+            headers.pop('content-type')
+        elif method == 'put' or method == 'post':
+            json = data
+            data = None
+
+        log.debug('Asking method: %s', caller_func)
+        log.debug('Asking url: %s', url)
+        log.debug('Asking headers: %s', headers)
+        log.debug('Asking data: %s', data)
+        log.debug('Asking json: %s', json)
+        log.debug('Asking files: %s', files)
+        return caller_func(url=url, headers=headers, data=data, files=files, json=json)
 
 
     def post_message(self, user_id, message, sent_by_maker=False):
@@ -45,6 +59,24 @@ class Smooch:
 
         data = {"text": message, "role": role}
         return self.ask('appusers/{0}/conversation/messages'.format(user_id), data, 'post')
+
+
+    def post_media(self, user_id, sent_by_maker=False, file_path=None):
+        role = "appUser"
+        if sent_by_maker:
+            role = "appMaker"
+
+        data = {"role": role}
+
+        mime = MimeTypes()
+        mime_type, _ = mime.guess_type(file_path)
+
+        file_name = os.path.basename(file_path)
+        files = {'source': (file_name, open(file_path, 'rb'), mime_type)}
+
+        url = 'appusers/{0}/conversation/images'.format(user_id)
+
+        return self.ask(url, data, 'post', files)
 
 
     def get_user(self, user_id):
@@ -69,7 +101,6 @@ class Smooch:
         }
         return self.ask('appusers', data, 'post')
 
-
     def get_webhooks(self):
         return self.ask('webhooks', {}, 'get')
 
@@ -81,7 +112,7 @@ class Smooch:
 
 
     def ensure_webhook_exist(self, trigger, webhook_url):
-        print "Ensuring that webhook exist: {0}; {1}".format(trigger, webhook_url)
+        log.debug("Ensuring that webhook exist: %s; %s", trigger, webhook_url)
         r = self.get_webhooks()
         data = r.json()
 
@@ -97,17 +128,17 @@ class Smooch:
                     message_webhook_needs_updating = True
                 break
 
-        print "message_webhook_id: {0}".format(message_webhook_id)
-        print "message_webhook_needs_updating: {0}".format(message_webhook_needs_updating)
+        log.debug("message_webhook_id: %s", message_webhook_id)
+        log.debug("message_webhook_needs_updating: %s", message_webhook_needs_updating)
         if not message_webhook_id:
-            print "Creating webhook"
+            log.debug("Creating webhook")
             r = self.make_webhook(webhook_url, ["message"])
             data = r.json()
             message_webhook_id = data["webhook"]["_id"]
             webhook_secret = data["webhook"]["secret"]
 
         if message_webhook_needs_updating:
-            print "Updating webhook"
+            log.debug("Updating webhook")
             self.update_webhook(message_webhook_id, webhook_url, ["message"])
 
         return message_webhook_id, webhook_secret
@@ -116,7 +147,7 @@ class Smooch:
     def headers(self):
         return {
             'Authorization': 'Bearer {0}'.format(self.jwt_token),
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
         }
 
 

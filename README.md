@@ -48,6 +48,12 @@ In case of any trouble, feel free to open new issue or pull request here.
     # 567c0db1282bcf2a00ca95ea
     print webhook_secret
     # a0f9e5eb89179f14baea600a8721257c58478a40
+    
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '__test.jpg')
+    r = api.post_media(user_id, False, file_path)
+    print r.text
+    # {"message":{"text":"https://media.smooch.io/conversations/5683e05fc805852a00cccbf7/687818505bd9c08ba3235710e3dff03a.jpg","mediaType":"image/jpeg","mediaUrl":"https://media.smooch.io/conversations/5683e05fc805852a00cccbf7/687818505bd9c08ba3235710e3dff03a.jpg","received":1451483231.684,"authorId":"d1869aeb7ec607241a292070","name":"Spotless Falcon","role":"appUser","_id":"5683e05fc805852a00cccbf8","actions":[]},"conversation":{"__v":0,"createdAt":"2015-12-30T13:47:11.696Z","appId":"567aca9ff231a929003b4146","_id":"7f6c58b0030cf4b39949864b","messages":[{"text":"https://media.smooch.io/conversations/5683e05fc805852a00cccbf7/687818505bd9c08ba3235710e3dff03a.jpg","mediaType":"image/jpeg","mediaUrl":"https://media.smooch.io/conversations/5683e05fc805852a00cccbf7/687818505bd9c08ba3235710e3dff03a.jpg","received":1451483231.684,"authorId":"d1869aeb7ec607241a292070","name":"Spotless Falcon","role":"appUser","_id":"5683e05fc805852a00cccbf8","actions":[]}],"redirectFrom":[],"appUsers":["d1869aeb7ec607241a292070"],"appMakerEmails":[],"appMakers":[]}}
+
 
 ## Smooch user authorization
    

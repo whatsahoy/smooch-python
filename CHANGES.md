@@ -1,3 +1,6 @@
+# 1.0.4
+- Added method to upload media files
+
 # 1.0.3
 - Added precreate user option 
 

@@ -59,6 +59,6 @@ vagrant.xml
 workspace.xml
 jenkinsSettings.xml
 Django_Lib.xml
-server_settings.py
-newrelic.ini
-deployment/credentials
+__test.py
+__test.png
+__test.jpg
