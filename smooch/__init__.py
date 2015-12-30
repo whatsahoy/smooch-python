@@ -27,7 +27,6 @@ class Smooch:
 
     def ask(self, endpoint, data, method='get', files=None):
         url = "https://api.smooch.io/v1/{0}".format(endpoint)
-        json = None
 
         if method == 'get':
             caller_func = requests.get
@@ -40,16 +39,14 @@ class Smooch:
         if files:
             headers.pop('content-type')
         elif method == 'put' or method == 'post':
-            json = data
-            data = None
+            data = json.dumps(data)
 
         log.debug('Asking method: %s', caller_func)
         log.debug('Asking url: %s', url)
         log.debug('Asking headers: %s', headers)
         log.debug('Asking data: %s', data)
-        log.debug('Asking json: %s', json)
         log.debug('Asking files: %s', files)
-        return caller_func(url=url, headers=headers, data=data, files=files, json=json)
+        return caller_func(url=url, headers=headers, data=data, files=files)
 
 
     def post_message(self, user_id, message, sent_by_maker=False):
