@@ -58,7 +58,7 @@ class Smooch:
         return self.ask('appusers/{0}/conversation/messages'.format(user_id), data, 'post')
 
 
-    def post_media(self, user_id, sent_by_maker=False, file_path=None):
+    def post_media(self, user_id, file_path, sent_by_maker=False):
         role = "appUser"
         if sent_by_maker:
             role = "appMaker"
