@@ -13,7 +13,11 @@ log = logging.getLogger(__name__)
 
 class Smooch:
     class APIError(Exception):
-        pass
+        def __init__(self, response):
+            self.response = response
+
+        def __str__(self):
+            return str(self.response)
 
     def __init__(self, key_id, secret):
         self.key_id = key_id
