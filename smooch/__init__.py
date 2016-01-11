@@ -41,6 +41,8 @@ class Smooch:
             caller_func = requests.post
         elif method == 'put':
             caller_func = requests.put
+        elif method == 'delete':
+            caller_func = requests.delete
 
         headers = self.headers
         if files:
@@ -120,6 +122,20 @@ class Smooch:
     def update_webhook(self, webhook_id, target, triggers):
         return self.ask('webhooks/{0}'.format(webhook_id), {"target": target, "triggers": triggers}, 'put')
 
+    def delete_webhook(self, webhook_id):
+        return self.ask('webhooks/{0}'.format(webhook_id), {}, 'delete')
+
+    def delete_all_webhooks(self):
+        webhooks_response = self.get_webhooks()
+        webhooks = webhooks_response.json()['webhooks']
+
+        responses = []
+        for webhook in webhooks:
+            dr = self.delete_webhook(webhook['_id'])
+            responses.append(dr)
+
+        return responses
+
 
     def ensure_webhook_exist(self, trigger, webhook_url):
         log.debug("Ensuring that webhook exist: %s; %s", trigger, webhook_url)
@@ -142,14 +158,14 @@ class Smooch:
         log.debug("message_webhook_needs_updating: %s", message_webhook_needs_updating)
         if not message_webhook_id:
             log.debug("Creating webhook")
-            r = self.make_webhook(webhook_url, ["message"])
+            r = self.make_webhook(webhook_url, [trigger])
             data = r.json()
             message_webhook_id = data["webhook"]["_id"]
             webhook_secret = data["webhook"]["secret"]
 
         if message_webhook_needs_updating:
             log.debug("Updating webhook")
-            self.update_webhook(message_webhook_id, webhook_url, ["message"])
+            self.update_webhook(message_webhook_id, webhook_url, [trigger])
 
         return message_webhook_id, webhook_secret
 

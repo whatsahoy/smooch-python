@@ -1,3 +1,7 @@
+# 1.0.6
+- Fixed issue in ensuring_webhooks
+- Added option to delete webhooks
+
 # 1.0.5
 - When Smooch API returns error, the class will raise `Smooch.APIError` containing response from server 
 
