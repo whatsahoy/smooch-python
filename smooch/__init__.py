@@ -12,6 +12,9 @@ log = logging.getLogger(__name__)
 
 
 class Smooch:
+    class APIError(Exception):
+        pass
+
     def __init__(self, key_id, secret):
         self.key_id = key_id
         self.secret = secret
@@ -46,7 +49,13 @@ class Smooch:
         log.debug('Asking headers: %s', headers)
         log.debug('Asking data: %s', data)
         log.debug('Asking files: %s', files)
-        return caller_func(url=url, headers=headers, data=data, files=files)
+
+        response = caller_func(url=url, headers=headers, data=data, files=files)
+
+        if response.status_code == 200 or response.status_code == 201:
+            return response
+        else:
+            raise Smooch.APIError(response)
 
 
     def post_message(self, user_id, message, sent_by_maker=False):
