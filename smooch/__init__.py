@@ -22,15 +22,16 @@ class Smooch:
     def __init__(self, key_id, secret):
         self.key_id = key_id
         self.secret = secret
-        self.jwt_token = jwt.encode({'scope': 'app'}, secret, algorithm='HS256', headers={"kid": key_id})
+        self.jwt_token = jwt.encode({'scope': 'app'}, secret,
+                                    algorithm='HS256', headers={"kid": key_id})
 
     @staticmethod
     def jwt_for_user(key_id, secret, user_id):
-        return jwt.encode({'scope': 'appUser', 'userId': user_id}, secret, algorithm='HS256', headers={"kid": key_id})
+        return jwt.encode({'scope': 'appUser', 'userId': user_id}, secret,
+                          algorithm='HS256', headers={"kid": key_id})
 
     def user_jwt(self, user_id):
         return self.jwt_for_user(self.key_id, self.secret, user_id)
-
 
     def ask(self, endpoint, data, method='get', files=None):
         url = "https://api.smooch.io/v1/{0}".format(endpoint)
@@ -56,13 +57,13 @@ class Smooch:
         log.debug('Asking data: %s', data)
         log.debug('Asking files: %s', files)
 
-        response = caller_func(url=url, headers=headers, data=data, files=files)
+        response = caller_func(url=url, headers=headers, data=data,
+                               files=files)
 
         if response.status_code == 200 or response.status_code == 201:
             return response
         else:
             raise Smooch.APIError(response)
-
 
     def post_message(self, user_id, message, sent_by_maker=False):
         role = "appUser"
@@ -70,8 +71,8 @@ class Smooch:
             role = "appMaker"
 
         data = {"text": message, "role": role}
-        return self.ask('appusers/{0}/conversation/messages'.format(user_id), data, 'post')
-
+        return self.ask('appusers/{0}/conversation/messages'.format(user_id),
+                        data, 'post')
 
     def post_media(self, user_id, file_path, sent_by_maker=False):
         role = "appUser"
@@ -89,7 +90,6 @@ class Smooch:
         url = 'appusers/{0}/conversation/images'.format(user_id)
 
         return self.ask(url, data, 'post', files)
-
 
     def get_user(self, user_id):
         return self.ask('appusers/{0}'.format(user_id), {}, 'get')
@@ -113,22 +113,26 @@ class Smooch:
         }
         return self.ask('appusers', data, 'post')
 
-    def link_user_to_channel(self, user_id, channel, entity, skip_confirmation=False):
+    def link_user_to_channel(self, user_id, channel, entity,
+                             skip_confirmation=False):
         data = {'type': channel, 'skipConfirmation': skip_confirmation}
         data.update(entity)
         return self.ask('appusers/{0}/channels'.format(user_id), data, 'post')
 
     def unlink_user_from_channel(self, user_id, channel):
-        return self.ask('appusers/{0}/channels/{1}'.format(user_id, channel), {}, 'delete')
+        return self.ask('appusers/{0}/channels/{1}'.format(user_id, channel),
+                        {}, 'delete')
 
     def get_webhooks(self):
         return self.ask('webhooks', {}, 'get')
 
     def make_webhook(self, target, triggers):
-        return self.ask('webhooks', {"target": target, "triggers": triggers}, 'post')
+        return self.ask('webhooks', {"target": target, "triggers": triggers},
+                        'post')
 
     def update_webhook(self, webhook_id, target, triggers):
-        return self.ask('webhooks/{0}'.format(webhook_id), {"target": target, "triggers": triggers}, 'put')
+        return self.ask('webhooks/{0}'.format(webhook_id),
+                        {"target": target, "triggers": triggers}, 'put')
 
     def delete_webhook(self, webhook_id):
         return self.ask('webhooks/{0}'.format(webhook_id), {}, 'delete')
@@ -143,7 +147,6 @@ class Smooch:
             responses.append(dr)
 
         return responses
-
 
     def ensure_webhook_exist(self, trigger, webhook_url):
         log.debug("Ensuring that webhook exist: %s; %s", trigger, webhook_url)
@@ -163,7 +166,8 @@ class Smooch:
                 break
 
         log.debug("message_webhook_id: %s", message_webhook_id)
-        log.debug("message_webhook_needs_updating: %s", message_webhook_needs_updating)
+        log.debug("message_webhook_needs_updating: %s",
+                  message_webhook_needs_updating)
         if not message_webhook_id:
             log.debug("Creating webhook")
             r = self.make_webhook(webhook_url, [trigger])
@@ -183,5 +187,3 @@ class Smooch:
             'Authorization': 'Bearer {0}'.format(self.jwt_token),
             'content-type': 'application/json'
         }
-
-
