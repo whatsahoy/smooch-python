@@ -113,6 +113,14 @@ class Smooch:
         }
         return self.ask('appusers', data, 'post')
 
+    def link_user_to_channel(self, user_id, channel, entity, skip_confirmation=False):
+        data = {'type': channel, 'skipConfirmation': skip_confirmation}
+        data.update(entity)
+        return self.ask('appusers/{0}/channels'.format(user_id), data, 'post')
+
+    def unlink_user_from_channel(self, user_id, channel):
+        return self.ask('appusers/{0}/channels/{1}'.format(user_id, channel), {}, 'delete')
+
     def get_webhooks(self):
         return self.ask('webhooks', {}, 'get')
 
