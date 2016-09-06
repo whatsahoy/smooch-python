@@ -1,8 +1,8 @@
 # 1.0.7
-- Added link_user_to_channel and unlink_user_from_channel
+- Added `link_user_to_channel` and `unlink_user_from_channel`
 
 # 1.0.6
-- Fixed issue in ensuring_webhooks
+- Fixed issue in `ensuring_webhooks`
 - Added option to delete webhooks
 
 # 1.0.5
